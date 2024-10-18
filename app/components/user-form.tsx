@@ -12,9 +12,13 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { UserFormData } from '../actions/schemas'
-
+import { User } from '../actions/schemas'
 
 interface FormComponentProps {
+  defaultValues: User
+  onSubmit: (data: Omit<User, 'id'>) => Promise<void>
+  validationSchema: any
+  onChange: () => void
   form: UseFormReturn<UserFormData>
 }
 

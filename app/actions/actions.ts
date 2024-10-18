@@ -25,3 +25,19 @@ export async function addUser(data: Omit<User, 'id'>): Promise<User> {
   users.push(validatedUser)
   return validatedUser
 }
+
+export async function editUser(id: string, data: Omit<User, 'id'>): Promise<User> {
+  // Validate the data
+  const validatedData = await userSchema.omit({ id: true }).parseAsync(data);
+
+  // Find the user and update their information
+  const userIndex = users.findIndex(user => user.id === id);
+  if (userIndex === -1) {
+    throw new Error('User not found');
+  }
+
+  const updatedUser = { ...users[userIndex], ...validatedData };
+  users[userIndex] = updatedUser;
+
+  return updatedUser;
+}

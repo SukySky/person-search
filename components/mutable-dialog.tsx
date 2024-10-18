@@ -22,6 +22,10 @@ export interface ActionState <T>{
     data?: T;
   }
 interface GenericDialogProps<T extends FieldValues> {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  children?: React.ReactNode;
   formSchema: ZodType<T>;
   FormComponent: React.ComponentType<{ form: UseFormReturn<T> }>;
   action?: (data: T) => Promise<ActionState<T>>;

@@ -1,21 +1,43 @@
+import React, { useState } from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { Phone, Mail, MapPin } from 'lucide-react'
-
-interface User {
-  id: string
-  name: string
-  phoneNumber: string
-  email?: string
-  location?: string
-}
+import { Button } from '@/components/ui/button'
+import { Phone, Mail } from 'lucide-react'
+import { EditUserDialog } from './edit-user-dialog'
+import { User } from '../actions/schemas'
+import { editUser } from '../actions/actions'
 
 interface UserCardProps {
   user: User
+  onUserUpdate: (updatedUser: User) => void
 }
 
-export function UserCard({ user }: UserCardProps) {
+export default function UserCard({ user, onUserUpdate }: UserCardProps) {
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const handleOpenEditDialog = () => {
+    setIsEditDialogOpen(true)
+  }
+
+  const handleCloseEditDialog = () => {
+    setIsEditDialogOpen(false)
+  }
+
+  const handleUserUpdate = async (updatedUser: User) => {
+    const previousUser = { ...user }
+    onUserUpdate(updatedUser)
+
+    try {
+      await editUser(updatedUser.id, updatedUser)
+      setError(null)
+    } catch (error) {
+      setError('Failed to update user')
+      onUserUpdate(previousUser)
+    }
+  }
+
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="flex flex-row items-center gap-4">
@@ -39,13 +61,15 @@ export function UserCard({ user }: UserCardProps) {
             <span>{user.email}</span>
           </div>
         )}
-        {user.location && (
-          <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-muted-foreground" />
-            <span>{user.location}</span>
-          </div>
-        )}
+        <Button onClick={handleOpenEditDialog} className="mt-4">Edit</Button>
+        {error && <div className="text-red-500 mt-2">{error}</div>}
       </CardContent>
+      <EditUserDialog
+        user={user}
+        isOpen={isEditDialogOpen}
+        onClose={handleCloseEditDialog}
+        onSuccess={handleUserUpdate}
+      />
     </Card>
   )
 }
