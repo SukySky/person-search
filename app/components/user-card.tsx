@@ -61,9 +61,9 @@ export default function UserCard({ user, onUserUpdate }: UserCardProps) {
             <span>{user.email}</span>
           </div>
         )}
-        <Button onClick={handleOpenEditDialog} className="mt-4">Edit</Button>
+          </CardContent>
+        <button onClick={handleOpenEditDialog} className="mt-4"></button>
         {error && <div className="text-red-500 mt-2">{error}</div>}
-      </CardContent>
       <EditUserDialog
         user={user}
         isOpen={isEditDialogOpen}

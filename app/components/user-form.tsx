@@ -15,14 +15,18 @@ import { UserFormData } from '../actions/schemas'
 import { User } from '../actions/schemas'
 
 interface FormComponentProps {
-  defaultValues: User
-  onSubmit: (data: Omit<User, 'id'>) => Promise<void>
-  validationSchema: any
-  onChange: () => void
-  form: UseFormReturn<UserFormData>
-}
+  form: UseFormReturn<UserFormData>;
 
-export function UserForm({ form }: FormComponentProps) {
+  defaultValues: UserFormData;
+
+  onSubmit: (data: UserFormData) => void;
+
+  validationSchema: any;
+
+  onChange: () => void;
+
+}
+export const UserForm: React.FC<FormComponentProps> = ({ form, defaultValues, onSubmit, validationSchema, onChange }) => {
   return (
     <Form {...form}>
       <FormField
@@ -88,3 +92,5 @@ export function UserForm({ form }: FormComponentProps) {
     </Form>
   )
 }
+
+export default UserForm;

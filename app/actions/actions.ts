@@ -3,7 +3,7 @@
 
 import { User, userSchema } from './schemas'
 
-const users: User[] = [
+let users: User[] = [
     { id: '1', name: 'John Doe', phoneNumber: '123-456-7890', email: 'john@example.com' },
     { id: '2', name: 'Jane Smith', phoneNumber: '234-567-8901', email: 'jane@example.com' },
     { id: '3', name: 'Alice Johnson', phoneNumber: '345-678-9012', email: 'alice@example.com' },
@@ -28,7 +28,7 @@ export async function addUser(data: Omit<User, 'id'>): Promise<User> {
 
 export async function editUser(id: string, data: Omit<User, 'id'>): Promise<User> {
   // Validate the data
-  const validatedData = await userSchema.omit({ id: true }).parseAsync(data);
+  const validatedData = userSchema.parse(data);
 
   // Find the user and update their information
   const userIndex = users.findIndex(user => user.id === id);

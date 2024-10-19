@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import MutableDialog from "@/components/mutable-dialog";
+import MutableDialog, { ActionState } from "@/components/mutable-dialog";
 import { UserForm } from "./user-form";
-import { userSchema, User } from "../actions/schemas";
+import { userSchema, User, userFormSchema, UserFormData } from "../actions/schemas";
 import { editUser } from "../actions/actions";
 import { useForm } from "react-hook-form";
+import { Form } from "@/components/ui/form";
 
 interface EditUserDialogProps {
     user: User;
@@ -14,14 +15,23 @@ interface EditUserDialogProps {
   
   export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDialogProps) {
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  
-    const handleEditUser = async (data: Omit<User, 'id'>) => {
+    const form = useForm<User>({
+      defaultValues: {
+        ...user,
+        phoneNumber: user.phoneNumber ?? '', // Ensure phoneNumber is always a string
+      },
+    });
+    
+    
+    const handleEditUser = async (data: Omit<User, 'id'>): Promise<ActionState<{ name: string; email: string; phoneNumber: string; }>> => {
       try {
         const updatedUser = await editUser(user.id, data);
         onSuccess(updatedUser);
         onClose();
+        return { success: true, message: null, data: updatedUser };
       } catch (error) {
         console.error('Failed to edit user:', error);
+        return { success: false, message: 'Failed to edit user', error };
       }
     };
   
@@ -41,20 +51,22 @@ interface EditUserDialogProps {
   
     return (
       <MutableDialog
-        isOpen={isOpen}
-        onClose={handleClose}
-        formSchema={userSchema}
-        FormComponent={() => (
+        formSchema={userFormSchema}
+        FormComponent={(props) => (
           <UserForm
-            defaultValues={{
-              ...user,
-              phoneNumber: user.phoneNumber ?? '', // Ensure phoneNumber is always a string
-            }}
+            {...props}
+            defaultValues={form.getValues()}
             onSubmit={handleEditUser}
-            validationSchema={userSchema}
-            onChange={handleFormChange}
-            form={useForm()}
-            />
-        )} title={"Edit User"}    
-        />
-  );}
+            validationSchema={userFormSchema}
+            onChange={handleFormChange} />
+        )}
+        action={handleEditUser}
+        defaultValues={form.getValues()}
+        triggerButtonLabel="Edit"
+        addDialogTitle={`Edit User ${user.name}`}
+        dialogDescription="Update the user details below."
+        submitButtonLabel="Save Changes" isOpen={false} onClose={function (): void {
+          throw new Error("Function not implemented.");
+        } } title={""}      />
+      );
+      }
