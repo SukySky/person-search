@@ -1,39 +1,52 @@
-// app/components/user-dialog.tsx
-'use client'
+// app/actions.ts
+'use server'
 
-import {  addUser } from '@/app/actions/actions'
-import { userFormSchema, User, UserFormData } from '@/app/actions/schemas'
+import { PrismaClient } from '@prisma/client';
+import { User, userSchema } from '@/app/actions/schemas';
 
-import { UserForm } from './user-form'
-import MutableDialog, { ActionState }  from '@/components/mutable-dialog'
+const prisma = new PrismaClient();
 
+// Search Users Function
+export async function searchUsers(query: string): Promise<User[]> {
+  console.log('Searching users with query:', query);
 
-export function UserDialog() {
-  const handleAddUser = async (data: UserFormData): Promise<ActionState<User>> => {
-    try {
-      const newUser = await addUser(data)
-      return {
-        success: true,
-        message: `User ${newUser.name} added successfully`,
-        data: newUser
-      }
-    } catch (error) {
-      return {
-        success: false,
-        message: 'Failed to add user'
-      }
-    }
-  }
+  // Use Prisma to search for users in the database
+  const users = await prisma.user.findMany({
+    where: {
+      OR: [
+        { name: { contains: query, mode: 'insensitive' } },
+        { email: { contains: query, mode: 'insensitive' } },
+        { phoneNumber: { contains: query, mode: 'insensitive' } },
+      ],
+    },
+  });
 
-  return (
-    <MutableDialog<UserFormData>
-      formSchema={userFormSchema}
-      FormComponent={UserForm}
-      action={handleAddUser}
-      triggerButtonLabel="Add User"
-      addDialogTitle="Add New User"
-      dialogDescription="Fill out the form below to add a new user."
-      submitButtonLabel="Add User"
-    />
-  )
+  return users as unknown as User[];
+}
+
+// Add User Function
+export async function addUser(data: Omit<User, 'id'>): Promise<User> {
+  // Validate incoming data
+  const validatedData = userSchema.parse(data);
+
+  // Create a new user in the database using Prisma
+  const newUser = await prisma.user.create({
+    data: { ...validatedData, id: undefined },
+  });
+
+  return newUser as unknown as User;
+}
+
+// Edit User Function
+export async function editUser(id: number, data: Omit<User, 'id'>): Promise<User> {
+  // Validate the incoming data
+  const validatedData = userSchema.parse(data);
+
+  // Update the user in the database using Prisma
+  const updatedUser = await prisma.user.update({
+    where: { id },
+    data: { ...validatedData, id: undefined },
+  });
+
+  return updatedUser as unknown as User;
 }
