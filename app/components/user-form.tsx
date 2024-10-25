@@ -1,7 +1,6 @@
-// app/components/user-form.tsx
 'use client'
 
-import { UseFormReturn } from 'react-hook-form'
+import { UseFormReturn } from 'react-hook-form';
 import {
   Form,
   FormControl,
@@ -9,24 +8,22 @@ import {
   FormField,
   FormItem,
   FormLabel,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { UserFormData } from '../actions/schemas'
-import { User } from '../actions/schemas'
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { userFormSchema } from '@/app/actions/schemas';
+import type { z } from 'zod';
+
+export type UserFormData = z.infer<typeof userFormSchema>;
 
 interface FormComponentProps {
   form: UseFormReturn<UserFormData>;
-
   defaultValues: UserFormData;
-
   onSubmit: (data: UserFormData) => void;
-
-  validationSchema: any;
-
+  validationSchema: z.ZodSchema<UserFormData>;
   onChange: () => void;
-
 }
-export const UserForm: React.FC<FormComponentProps> = ({ form, defaultValues, onSubmit, validationSchema, onChange }) => {
+
+export const UserForm: React.FC<FormComponentProps> = ({ form }) => {
   return (
     <Form {...form}>
       <FormField
@@ -42,10 +39,10 @@ export const UserForm: React.FC<FormComponentProps> = ({ form, defaultValues, on
               Enter full name.
             </FormDescription>
             {fieldState.error && (
-                            <p className="text-red-600 text-sm mt-1">
-                                {String(fieldState.error) || ''}
-                            </p>
-                        ) }
+              <p className="text-red-600 text-sm mt-1">
+                {String(fieldState.error) || ''}
+              </p>
+            )}
           </FormItem>
         )}
       />
@@ -62,10 +59,10 @@ export const UserForm: React.FC<FormComponentProps> = ({ form, defaultValues, on
               Enter email address.
             </FormDescription>
             {fieldState.error && (
-                            <p className="text-red-600 text-sm mt-1">
-                                {String(fieldState.error) || ''}
-                            </p>
-                        ) }
+              <p className="text-red-600 text-sm mt-1">
+                {String(fieldState.error) || ''}
+              </p>
+            )}
           </FormItem>
         )}
       />
@@ -82,15 +79,15 @@ export const UserForm: React.FC<FormComponentProps> = ({ form, defaultValues, on
               Enter phone number in Australian phone number format.
             </FormDescription>
             {fieldState.error && (
-                            <p className="text-red-600 text-sm mt-1">
-                                {String(fieldState.error) || ''}
-                            </p>
-                        ) }
+              <p className="text-red-600 text-sm mt-1">
+                {String(fieldState.error) || ''}
+              </p>
+            )}
           </FormItem>
         )}
       />
     </Form>
-  )
-}
+  );
+};
 
 export default UserForm;

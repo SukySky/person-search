@@ -13,7 +13,7 @@ interface Option {
 }
 
 export default function UserSearch() {
-  let [selectedUser, setSelectedUser] = useState<User | null>(null)
+  const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
   const loadOptions = async (inputValue: string): Promise<Option[]> => {
     const users = await searchUsers(inputValue)

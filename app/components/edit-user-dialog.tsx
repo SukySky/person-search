@@ -4,7 +4,6 @@ import { UserForm } from "./user-form";
 import { userSchema, User } from "../actions/schemas";
 import { editUser } from "../actions/actions";
 import { useForm } from "react-hook-form";
-import { Form } from "@/components/ui/form";
 
 interface EditUserDialogProps {
     user: User;
@@ -13,8 +12,8 @@ interface EditUserDialogProps {
     onSuccess: (updatedUser: User) => void;
   }
   
-  export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDialogProps) {
-    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  export function EditUserDialog({ user, onClose, onSuccess }: EditUserDialogProps) {
+    const [, setHasUnsavedChanges] = useState(false);
     const form = useForm<User>({
       defaultValues: {
         ...user,
@@ -25,7 +24,7 @@ interface EditUserDialogProps {
     
     const handleEditUser = async (data: Omit<User, 'id'>): Promise<ActionState<{ name: string; email: string; phoneNumber: string; }>> => {
       try {
-        const updatedUser = await editUser(user.id.toString(), data);
+        const updatedUser = await editUser(Number(user.id), data);
         onSuccess(updatedUser);
         onClose();
         return { success: true, message: null, data: { ...updatedUser, phoneNumber: updatedUser.phoneNumber ?? '' } };
@@ -39,15 +38,6 @@ interface EditUserDialogProps {
       setHasUnsavedChanges(true);
     };
   
-    const handleClose = () => {
-      if (hasUnsavedChanges) {
-        if (window.confirm('You have unsaved changes. Are you sure you want to close?')) {
-          onClose();
-        }
-      } else {
-        onClose();
-      }
-    };
   
     return (
       <MutableDialog

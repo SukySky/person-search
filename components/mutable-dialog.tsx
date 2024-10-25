@@ -48,7 +48,7 @@ export default function MutableDialog<T extends FieldValues>({
   editDialogTitle = 'Edit',
   dialogDescription = defaultValues ? 'Make changes to your item here. Click save when you\'re done.' : 'Fill out the form below to add a new item.',
   submitButtonLabel = defaultValues ? 'Save' : 'Add',
-}: GenericDialogProps<T>) {
+}: GenericDialogProps<T>): React.JSX.Element {
   const [open, setOpen] = useState(false);
 
   const form = useForm<T>({

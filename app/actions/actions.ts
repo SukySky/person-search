@@ -1,7 +1,7 @@
 // app/actions.ts
 'use server'
 
-import { PrismaClient, User as PrismaUser } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { User, userSchema } from './schemas';
 
 const prisma = new PrismaClient();
@@ -21,7 +21,7 @@ export async function searchUsers(query: string): Promise<User[]> {
     },
   });
 
-  return users as User[];
+  return users as unknown as User[];
 }
 
 // Add User Function
@@ -34,7 +34,7 @@ export async function addUser(data: Omit<User, 'id'>): Promise<User> {
     data: { ...validatedData, id: undefined },
   });
 
-  return newUser as User;
+  return newUser as unknown as User;
 }
 
 // Edit User Function
@@ -48,5 +48,5 @@ export async function editUser(id: number, data: Omit<User, 'id'>): Promise<User
     data: { ...validatedData, id: undefined },
   });
 
-  return updatedUser as User;
+  return updatedUser as unknown as User;
 }

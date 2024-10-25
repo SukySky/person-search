@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { Phone, Mail } from 'lucide-react'
 import { EditUserDialog } from './edit-user-dialog'
 import { User } from '../actions/schemas'
@@ -30,7 +29,7 @@ export default function UserCard({ user, onUserUpdate }: UserCardProps) {
     onUserUpdate(updatedUser)
 
     try {
-      await editUser(updatedUser.id.toString(), updatedUser)
+      await editUser(Number(updatedUser.id), updatedUser)
       setError(null)
     } catch (error) {
       setError('Failed to update user')
