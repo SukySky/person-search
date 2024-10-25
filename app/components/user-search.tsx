@@ -17,7 +17,7 @@ export default function UserSearch() {
 
   const loadOptions = async (inputValue: string): Promise<Option[]> => {
     const users = await searchUsers(inputValue)
-    return users.map(user => ({ value: user.id, label: user.name, user }))
+    return users.map(user => ({ value: user.id.toString(), label: user.name, user }))
   }
 
   const handleChange = (option: Option | null) => {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import MutableDialog, { ActionState } from "@/components/mutable-dialog";
 import { UserForm } from "./user-form";
-import { userSchema, User, userFormSchema, UserFormData } from "../actions/schemas";
+import { userSchema, User } from "../actions/schemas";
 import { editUser } from "../actions/actions";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
@@ -25,10 +25,10 @@ interface EditUserDialogProps {
     
     const handleEditUser = async (data: Omit<User, 'id'>): Promise<ActionState<{ name: string; email: string; phoneNumber: string; }>> => {
       try {
-        const updatedUser = await editUser(user.id, data);
+        const updatedUser = await editUser(user.id.toString(), data);
         onSuccess(updatedUser);
         onClose();
-        return { success: true, message: null, data: updatedUser };
+        return { success: true, message: null, data: { ...updatedUser, phoneNumber: updatedUser.phoneNumber ?? '' } };
       } catch (error) {
         console.error('Failed to edit user:', error);
         return { success: false, message: 'Failed to edit user', error };
@@ -51,13 +51,13 @@ interface EditUserDialogProps {
   
     return (
       <MutableDialog
-        formSchema={userFormSchema}
+        formSchema={userSchema}
         FormComponent={(props) => (
           <UserForm
             {...props}
             defaultValues={form.getValues()}
             onSubmit={handleEditUser}
-            validationSchema={userFormSchema}
+            validationSchema={userSchema}
             onChange={handleFormChange} />
         )}
         action={handleEditUser}

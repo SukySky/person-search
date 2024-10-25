@@ -30,7 +30,7 @@ export default function UserCard({ user, onUserUpdate }: UserCardProps) {
     onUserUpdate(updatedUser)
 
     try {
-      await editUser(updatedUser.id, updatedUser)
+      await editUser(updatedUser.id.toString(), updatedUser)
       setError(null)
     } catch (error) {
       setError('Failed to update user')
