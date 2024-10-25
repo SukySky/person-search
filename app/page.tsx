@@ -1,7 +1,7 @@
 // app/page.tsx
 import { Suspense } from 'react'
 import UserSearch from './components/user-search'
-import { UserDialog } from './components/user-dialog'
+import UserDialog from './components/user-dialog'
 
 export default function Home() {
   function TechnicalOverview() {

@@ -50,3 +50,16 @@ export async function editUser(id: number, data: Omit<User, 'id'>): Promise<User
 
   return updatedUser as unknown as User;
 }
+
+import React from 'react';
+
+// Define the UserDialog component
+const UserDialog: React.FC = () => {
+  return (
+    <div>
+      {/* Your UserDialog component implementation */}
+    </div>
+  );
+};
+
+export default UserDialog;
