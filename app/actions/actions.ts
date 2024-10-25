@@ -27,25 +27,25 @@ export async function searchUsers(query: string): Promise<User[]> {
 // Add User Function
 export async function addUser(data: Omit<User, 'id'>): Promise<User> {
   // Validate incoming data
-  const { id: parsedId, ...validatedData } = userSchema.parse(data);
+  const validatedData = userSchema.parse(data);
 
   // Create a new user in the database using Prisma
   const newUser = await prisma.user.create({
-    data: validatedData,
+    data: { ...validatedData, id: undefined },
   });
 
   return newUser as User;
 }
 
 // Edit User Function
-export async function editUser(id: string, data: Omit<User, 'id'>): Promise<User> {
+export async function editUser(id: number, data: Omit<User, 'id'>): Promise<User> {
   // Validate the incoming data
-  const { id: parsedId, ...validatedData } = userSchema.parse(data);
+  const validatedData = userSchema.parse(data);
 
   // Update the user in the database using Prisma
   const updatedUser = await prisma.user.update({
-    where: { id: Number(id) },
-    data: validatedData,
+    where: { id },
+    data: { ...validatedData, id: undefined },
   });
 
   return updatedUser as User;
